@@ -49,15 +49,24 @@ func init() {
 }
 
 func New() Service {
-	uri := fmt.Sprintf("mongodb://%s:%s@localhost:%s", username, password, port)
-	// client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s", host, port)))
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
+	clientOpts := options.Client().
+		ApplyURI(fmt.Sprintf("mongodb://%s:%s", host, port))
 
+	// Done for tests, casuse the test container doesn't require authentication
+	// and crashes if we try to do this any other way
+	if username != "" && password != "" {
+		cred := options.Credential{
+			Username: username,
+			Password: password,
+		}
+		clientOpts.SetAuth(cred)
+	}
+
+	client, err := mongo.Connect(context.Background(), clientOpts)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Ping the database to verify connection
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -99,7 +108,7 @@ func (s *service) GetPosts() ([]*models.Post, error) {
 
 	//time descending (newest first)
 	findOptions := options.Find()
-	findOptions.SetSort(bson.D{{"created_at", -1}})
+	findOptions.SetSort(bson.D{{Key: "created_at", Value: -1}})
 
 	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
 	if err != nil {

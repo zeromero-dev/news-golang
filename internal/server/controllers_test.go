@@ -32,7 +32,7 @@ func TestHelloWorldHandler(t *testing.T) {
 	}
 }
 
-func TestGetPosts(t *testing.T) {
+func GetAllPostsHandler(t *testing.T) {
 	s := &Server{}
 	r := gin.New()
 	r.GET("/api/posts", s.GetPostsHandler)

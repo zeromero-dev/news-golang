@@ -20,7 +20,6 @@ func (s *Server) healthHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, s.db.Health())
 }
 
-// GetPostsHandler returns all posts
 func (s *Server) GetPostsHandler(c *gin.Context) {
 	posts, err := s.db.GetPosts()
 	if err != nil {
@@ -37,7 +36,6 @@ func (s *Server) GetPostsHandler(c *gin.Context) {
 	})
 }
 
-// CreatePostHandler creates a new post
 func (s *Server) CreatePostHandler(c *gin.Context) {
 	var post models.Post
 	if err := c.ShouldBindJSON(&post); err != nil {
@@ -65,7 +63,6 @@ func (s *Server) CreatePostHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, post)
 }
 
-// GetPostHandler returns a single post by ID
 func (s *Server) GetPostHandler(c *gin.Context) {
 	id := c.Param("id")
 
@@ -92,7 +89,7 @@ func (s *Server) GetPostHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, post)
 }
 
-// UpdatePostHandler updates an existing post
+
 func (s *Server) UpdatePostHandler(c *gin.Context) {
 	id := c.Param("id")
 
@@ -138,7 +135,7 @@ func (s *Server) UpdatePostHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, updatedPost)
 }
 
-// DeletePostHandler removes a post
+
 func (s *Server) DeletePostHandler(c *gin.Context) {
 	id := c.Param("id")
 

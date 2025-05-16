@@ -75,4 +75,8 @@ func UploadPageHandler(w http.ResponseWriter, r *http.Request) {
 }
 func DeletePageHandler(w http.ResponseWriter, r *http.Request) {
 	DeletePage().Render(r.Context(), w)
+
+}
+func UpdatePageHandler(w http.ResponseWriter, r *http.Request) {
+	UpdatePage().Render(r.Context(), w)
 }

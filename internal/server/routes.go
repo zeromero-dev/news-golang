@@ -65,6 +65,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 		web.UploadPageHandler(c.Writer, c.Request)
 	})
 
+	r.GET("/web/update", func(c *gin.Context) {
+		web.UpdatePageHandler(c.Writer, c.Request)
+	})
+
 	r.GET("/web/delete", func(c *gin.Context) {
 		web.DeletePageHandler(c.Writer, c.Request)
 	})

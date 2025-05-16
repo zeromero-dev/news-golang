@@ -1,6 +1,7 @@
 package web
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"io/ioutil"
@@ -72,8 +73,75 @@ func PostDetailHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func UploadPageHandler(w http.ResponseWriter, r *http.Request) {
-	UploadPage().Render(r.Context(), w)
+	UploadPage("", "").Render(r.Context(), w)
 }
+
+func UploadSubmitHandler(w http.ResponseWriter, r *http.Request) {
+	// Parse the form data
+	if err := r.ParseForm(); err != nil {
+		UploadPage("", "Failed to parse form data: "+err.Error()).Render(r.Context(), w)
+		return
+	}
+
+	// Get the form values
+	title := r.FormValue("title")
+	author := r.FormValue("author")
+	content := r.FormValue("content")
+
+	// Validate the form values
+	if title == "" || author == "" || content == "" {
+		UploadPage("", "All fields are required").Render(r.Context(), w)
+		return
+	}
+
+	// Create the payload
+	payload := map[string]string{
+		"title":   title,
+		"author":  author,
+		"content": content,
+	}
+
+	// Convert the payload to JSON
+	jsonPayload, err := json.Marshal(payload)
+	if err != nil {
+		UploadPage("", "Failed to create JSON payload: "+err.Error()).Render(r.Context(), w)
+		return
+	}
+
+	// Create a new request to create the post
+	req, err := http.NewRequest("POST", "http://localhost:8080/api/posts", bytes.NewBuffer(jsonPayload))
+	if err != nil {
+		UploadPage("", "Failed to create request: "+err.Error()).Render(r.Context(), w)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	// Send the request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		UploadPage("", "Failed to create post: "+err.Error()).Render(r.Context(), w)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Check if the creation was successful
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		// Read the error response
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			UploadPage("", "Failed to read error response: "+err.Error()).Render(r.Context(), w)
+			return
+		}
+
+		UploadPage("", "Failed to create post: "+string(body)).Render(r.Context(), w)
+		return
+	}
+
+	// Render the upload page with a success message
+	UploadPage("Post created successfully!", "").Render(r.Context(), w)
+}
+
 func DeletePageHandler(w http.ResponseWriter, r *http.Request) {
 	DeletePage("", "").Render(r.Context(), w)
 }

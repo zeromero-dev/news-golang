@@ -1,7 +1,3 @@
-
-
-
-          
 # Test News Application
 
 A simple news application built with Go, MongoDB, and HTMX.
@@ -17,6 +13,20 @@ These instructions will get you a copy of the project up and running on your loc
 - Templ engine
 - Docker and Docker Compose
 
+## Make sure .env file is created with the following variables
+
+```bash
+PORT=8080
+APP_ENV=local
+
+
+BLUEPRINT_DB_HOST=localhost //default host for MongoDB
+BLUEPRINT_DB_PORT=27017 //default port for MongoDB
+BLUEPRINT_DB_USERNAME=your_username
+BLUEPRINT_DB_ROOT_PASSWORD=your_password
+
+```
+
 ## MakeFile
 
 Note: If templ is not installing through the script, you should manually add the GOPATH.
@@ -24,6 +34,7 @@ You can do this by adding the following line to your `.zshrc` or `.bashrc` file:
 Then run `source ~/.zshrc` or `source ~/.bashrc` to apply the changes.
 
 Run build make command with tests
+
 ```bash
 make all
 ```
@@ -102,7 +113,7 @@ The web interface is available at the following routes:
 - **Go**: Backend language
 - **Gin**: Web framework
 - **MongoDB**: Database
-- **HTMX**: Frontend interactivity 
+- **HTMX**: Frontend interactivity
 - **Templ**: HTML templating
 - **Tailwind CSS**: Styling
 
@@ -112,30 +123,29 @@ For notes on how to deploy the project on a live system, consider the following 
 
 ### Using Docker
 
-A Dockerfile is provided for containerized deployment. Build and run the Docker container:
+A Docker-compose is provided for containerized deployment. Build and run the Docker container:
 
 ```bash
-# Build the Docker image
-docker build -t test-news .
-
-# Run the container
-docker run -p 8080:8080 -e MONGODB_URI="mongodb://your-mongodb-uri" test-news
+docker compose up
 ```
 
 ### Manual Deployment
 
 1. Build the application:
+
 ```bash
 make build
 ```
 
 2. Configure environment variables:
+
 ```bash
 export MONGODB_URI="mongodb://your-production-mongodb-uri"
 export PORT="8080"  # Or your preferred port
 ```
 
 3. Run the application:
+
 ```bash
 ./test-news
 ```

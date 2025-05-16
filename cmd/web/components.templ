@@ -1,0 +1,51 @@
+package web
+
+templ Nav(currentPage string) {
+	<nav class="bg-gray-800 text-white p-4">
+		<div class="container mx-auto flex justify-between">
+			<a href="/web/posts" class="font-bold">Test News</a>
+			<div>
+				<a 
+					href="/web/posts" 
+					class={ "mr-4 hover:text-blue-300 transition-colors" + navActiveClass(currentPage, "posts") }
+				>
+					Home
+				</a>
+				<a 
+					href="/web/posts" 
+					class={ "mr-4 hover:text-blue-300 transition-colors" + navActiveClass(currentPage, "posts") }
+				>
+					Posts
+				</a>
+				<a 
+					href="/web/upload" 
+					class={ "mr-4 hover:text-blue-300 transition-colors" + navActiveClass(currentPage, "upload") }
+				>
+					Upload
+				</a>
+				<a 
+					href="/web/update" 
+					class={ "mr-4 hover:text-blue-300 transition-colors" + navActiveClass(currentPage, "update") }
+				>
+					Update
+				</a>
+				<a 
+					href="/web/delete" 
+					class={ "mr-4 hover:text-blue-300 transition-colors" + navActiveClass(currentPage, "delete") }
+				>
+					Delete
+				</a>
+			</div>
+		</div>
+	</nav>
+}
+
+func navActiveClass(currentPage string, page string) string {
+	if currentPage == page {
+		return " bg-blue-700 px-3 py-1 rounded"
+	}
+	if currentPage == "delete" && page == "delete" {
+		return " bg-red-700 px-3 py-1 rounded"
+	}
+	return ""
+}

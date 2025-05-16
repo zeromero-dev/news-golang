@@ -1,0 +1,229 @@
+package web
+
+
+templ UpdatePage() {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Update Post - Test News</title>
+			<script src="https://unpkg.com/htmx.org@1.9.6"></script>
+			<script src="https://cdn.tailwindcss.com"></script>
+			<style>
+				.message {
+					opacity: 0;
+					transition: opacity 0.5s ease-in-out;
+				}
+				.message.show {
+					opacity: 1;
+				}
+			</style>
+		</head>
+		<body class="bg-gray-100 min-h-screen">
+			@Nav("Update")
+			
+			<div class="container mx-auto p-6">
+				<div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
+					<h1 class="text-2xl font-bold mb-6 text-gray-800">Update Post</h1>
+					
+					<div id="success-message" class="message mb-6 p-4 bg-green-100 text-green-700 rounded-lg hidden">
+						Post updated successfully!
+					</div>
+					
+					<div id="error-message" class="message mb-6 p-4 bg-red-100 text-red-700 rounded-lg hidden">
+						Error updating post. Please check the ID and try again.
+					</div>
+					
+					<div id="fetch-form-container" class="mb-8">
+						<form id="fetch-form" class="space-y-4">
+							<div>
+								<label for="fetchPostId" class="block text-sm font-medium text-gray-700 mb-1">Post ID</label>
+								<input
+									type="text"
+									id="fetchPostId"
+									name="fetchPostId"
+									required
+									class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+									placeholder="Enter post ID to update"
+								/>
+							</div>
+							
+							<div class="flex justify-end">
+								<button
+									type="submit"
+									class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-200"
+								>
+									Fetch Post
+								</button>
+							</div>
+						</form>
+					</div>
+					
+					<div id="update-form-container" class="hidden">
+						<form id="update-form" class="space-y-4">
+							<input type="hidden" id="postId" name="postId" />
+							
+							<div>
+								<label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+								<input
+									type="text"
+									id="title"
+									name="title"
+									required
+									class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+									placeholder="Enter post title"
+								/>
+							</div>
+							
+							<div>
+								<label for="author" class="block text-sm font-medium text-gray-700 mb-1">Author</label>
+								<input
+									type="text"
+									id="author"
+									name="author"
+									required
+									class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+									placeholder="Enter author name"
+								/>
+							</div>
+							
+							<div>
+								<label for="content" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+								<textarea
+									id="content"
+									name="content"
+									required
+									rows="6"
+									class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+									placeholder="Enter post content"
+								></textarea>
+							</div>
+							
+							<div class="flex justify-between">
+								<button
+									type="button"
+									id="cancel-button"
+									class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors duration-200"
+								>
+									Cancel
+								</button>
+								<button
+									type="submit"
+									class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md transition-colors duration-200"
+								>
+									Update Post
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			
+			<script>
+				// Fetch post by ID
+				document.getElementById('fetch-form').addEventListener('submit', async function(event) {
+					event.preventDefault();
+					
+					const postId = document.getElementById('fetchPostId').value.trim();
+					if (!postId) {
+						alert('Please enter a valid post ID');
+						return;
+					}
+					
+					try {
+						const response = await fetch(`/api/posts/${postId}`);
+						
+						if (!response.ok) {
+							document.getElementById('error-message').textContent = 'Post not found. Please check the ID and try again.';
+							document.getElementById('error-message').classList.remove('hidden');
+							document.getElementById('error-message').classList.add('show');
+							setTimeout(() => {
+								document.getElementById('error-message').classList.remove('show');
+								setTimeout(() => document.getElementById('error-message').classList.add('hidden'), 500);
+							}, 3000);
+							return;
+						}
+						
+						const post = await response.json();
+						
+						// Fill the update form with post data
+						document.getElementById('postId').value = postId;
+						document.getElementById('title').value = post.title || '';
+						document.getElementById('author').value = post.author || '';
+						document.getElementById('content').value = post.content || '';
+						
+						// Show update form, hide fetch form
+						document.getElementById('fetch-form-container').classList.add('hidden');
+						document.getElementById('update-form-container').classList.remove('hidden');
+						
+					} catch (error) {
+						alert('Error fetching post: ' + error.message);
+					}
+				});
+				
+				// Cancel update
+				document.getElementById('cancel-button').addEventListener('click', function() {
+					document.getElementById('update-form-container').classList.add('hidden');
+					document.getElementById('fetch-form-container').classList.remove('hidden');
+					document.getElementById('fetch-form').reset();
+				});
+				
+				// Update post
+				document.getElementById('update-form').addEventListener('submit', async function(event) {
+					event.preventDefault();
+					
+					const postId = document.getElementById('postId').value;
+					const title = document.getElementById('title').value;
+					const author = document.getElementById('author').value;
+					const content = document.getElementById('content').value;
+					
+					const payload = {
+						title: title,
+						author: author,
+						content: content
+					};
+					
+					try {
+						const response = await fetch(`/api/posts/${postId}`, {
+							method: 'PUT',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify(payload)
+						});
+						
+						if (!response.ok) {
+							document.getElementById('error-message').textContent = 'Error updating post. Please try again.';
+							document.getElementById('error-message').classList.remove('hidden');
+							document.getElementById('error-message').classList.add('show');
+							setTimeout(() => {
+								document.getElementById('error-message').classList.remove('show');
+								setTimeout(() => document.getElementById('error-message').classList.add('hidden'), 500);
+							}, 3000);
+							return;
+						}
+						
+						// Show success message
+						document.getElementById('success-message').classList.remove('hidden');
+						document.getElementById('success-message').classList.add('show');
+						setTimeout(() => {
+							document.getElementById('success-message').classList.remove('show');
+							setTimeout(() => {
+								document.getElementById('success-message').classList.add('hidden');
+								// Reset and show fetch form again
+								document.getElementById('update-form').reset();
+								document.getElementById('update-form-container').classList.add('hidden');
+								document.getElementById('fetch-form-container').classList.remove('hidden');
+								document.getElementById('fetch-form').reset();
+							}, 500);
+						}, 3000);
+						
+					} catch (error) {
+						alert('Error updating post: ' + error.message);
+					}
+				});
+			</script>
+		</body>
+	</html>
+}

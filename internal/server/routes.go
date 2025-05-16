@@ -55,12 +55,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 		web.PostsListHandler(c.Writer, c.Request)
 	})
 
-	r.GET("/api/posts/detail/:id", func(c *gin.Context) {
-		id := c.Param("id")
-		c.Request.URL.Path = "/api/posts/" + id
-		web.PostDetailHandler(c.Writer, c.Request)
-	})
-
 	r.GET("/web/upload", func(c *gin.Context) {
 		web.UploadPageHandler(c.Writer, c.Request)
 	})
@@ -86,5 +80,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 		web.DeleteExecuteHandler(c.Writer, c.Request)
 	})
 
+	r.GET("/web/posts/:id", func(c *gin.Context) {
+		web.PostDetailPageHandler(c.Writer, c.Request)
+	})
 	return r
 }

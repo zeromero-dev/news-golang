@@ -44,34 +44,40 @@ func PostsListHandler(w http.ResponseWriter, r *http.Request) {
 	PostsList(postsResp.Data).Render(r.Context(), w)
 }
 
-func PostDetailHandler(w http.ResponseWriter, r *http.Request) {
+func PostDetailPageHandler(w http.ResponseWriter, r *http.Request) {
 	// Extract the post ID from the URL
-	id := r.URL.Path[len("/api/posts/detail/"):]
+	// The URL format is /web/posts/:id
+	pathParts := strings.Split(r.URL.Path, "/")
+	id := pathParts[len(pathParts)-1]
 
 	// Fetch the post from the API endpoint
 	resp, err := http.Get("http://localhost:8080/api/posts/" + id)
 	if err != nil {
-		http.Error(w, "Failed to fetch post", http.StatusInternalServerError)
+		http.Error(w, "Failed to fetch post: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode != http.StatusOK {
+		http.Error(w, "Post not found", http.StatusNotFound)
+		return
+	}
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		http.Error(w, "Failed to read response body", http.StatusInternalServerError)
+		http.Error(w, "Failed to read response body: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	var post models.Post
 	if err := json.Unmarshal(body, &post); err != nil {
-		http.Error(w, "Failed to parse post data", http.StatusInternalServerError)
+		http.Error(w, "Failed to parse post data: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Render the post detail component
-	PostDetail(post).Render(r.Context(), w)
+	// Render the post detail page
+	PostDetailPage(post).Render(r.Context(), w)
 }
-
 func UploadPageHandler(w http.ResponseWriter, r *http.Request) {
 	UploadPage("", "").Render(r.Context(), w)
 }

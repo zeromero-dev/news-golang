@@ -24,7 +24,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// this is not a concern of duplication
 	// API routes that return JSON
-	r.GET("/", s.HelloWorldHandler)
 
 	r.GET("/health", s.healthHandler)
 
@@ -39,10 +38,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.GET("/web", func(c *gin.Context) {
 		templ.Handler(web.HelloForm()).ServeHTTP(c.Writer, c.Request)
-	})
-
-	r.POST("/hello", func(c *gin.Context) {
-		web.HelloWebHandler(c.Writer, c.Request)
 	})
 
 	// Web routes that return HTML

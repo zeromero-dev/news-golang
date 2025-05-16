@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"strings"
 	"test-news/internal/database/models"
@@ -63,7 +62,7 @@ func PostDetailPageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		http.Error(w, "Failed to read response body: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -134,7 +133,7 @@ func UploadSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if the creation was successful
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
 		// Read the error response
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			UploadPage("", "Failed to read error response: "+err.Error()).Render(r.Context(), w)
 			return

@@ -21,18 +21,7 @@ templ UpdatePage() {
 			</style>
 		</head>
 		<body class="bg-gray-100 min-h-screen">
-			<nav class="bg-gray-800 text-white p-4">
-				<div class="container mx-auto flex justify-between">
-					<a href="/" class="font-bold">Test News</a>
-					<div>
-						<a href="/web" class="mr-4 hover:text-blue-300 transition-colors">Home</a>
-						<a href="/web/posts" class="mr-4 hover:text-blue-300 transition-colors">Posts</a>
-						<a href="/web/upload" class="mr-4 hover:text-blue-300 transition-colors">Upload</a>
-						<a href="/web/update" class="mr-4 hover:text-blue-300 transition-colors bg-yellow-600 px-3 py-1 rounded">Update</a>
-						<a href="/web/delete" class="mr-4 hover:text-blue-300 transition-colors">Delete</a>
-					</div>
-				</div>
-			</nav>
+			@Nav("Update")
 			
 			<div class="container mx-auto p-6">
 				<div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">

@@ -55,11 +55,33 @@ func (s *Server) RegisterRoutes() http.Handler {
 		web.PostsListHandler(c.Writer, c.Request)
 	})
 
-	r.GET("/api/posts/detail/:id", func(c *gin.Context) {
-		id := c.Param("id")
-		c.Request.URL.Path = "/api/posts/" + id
-		web.PostDetailHandler(c.Writer, c.Request)
+	r.GET("/web/upload", func(c *gin.Context) {
+		web.UploadPageHandler(c.Writer, c.Request)
 	})
 
+	r.POST("/web/upload/submit", func(c *gin.Context) {
+		web.UploadSubmitHandler(c.Writer, c.Request)
+	})
+
+	r.GET("/web/update", func(c *gin.Context) {
+		web.UpdatePageHandler(c.Writer, c.Request)
+	})
+
+	//Delete page routes + handlers
+	r.GET("/web/delete", func(c *gin.Context) {
+		web.DeletePageHandler(c.Writer, c.Request)
+	})
+
+	r.POST("/web/delete/confirm", func(c *gin.Context) {
+		web.DeleteConfirmHandler(c.Writer, c.Request)
+	})
+
+	r.POST("/web/delete/execute/:id", func(c *gin.Context) {
+		web.DeleteExecuteHandler(c.Writer, c.Request)
+	})
+
+	r.GET("/web/posts/:id", func(c *gin.Context) {
+		web.PostDetailPageHandler(c.Writer, c.Request)
+	})
 	return r
 }

@@ -1,0 +1,121 @@
+package web
+
+templ DeletePage(successMessage string, errorMessage string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Delete Post - Test News</title>
+			<script src="https://unpkg.com/htmx.org@1.9.6"></script>
+			<script src="https://cdn.tailwindcss.com"></script>
+		</head>
+		<body class="bg-gray-100 min-h-screen">
+			<nav class="bg-gray-800 text-white p-4">
+				<div class="container mx-auto flex justify-between">
+					<a href="/" class="font-bold">Test News</a>
+					<div>
+						<a href="/web" class="mr-4 hover:text-blue-300 transition-colors">Home</a>
+						<a href="/web/posts" class="mr-4 hover:text-blue-300 transition-colors">Posts</a>
+						<a href="/web/upload" class="mr-4 hover:text-blue-300 transition-colors">Upload</a>
+						<a href="/web/delete" class="mr-4 hover:text-blue-300 transition-colors bg-red-700 px-3 py-1 rounded">Delete</a>
+					</div>
+				</div>
+			</nav>
+			
+			<div class="container mx-auto p-6">
+				<div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
+					<h1 class="text-2xl font-bold mb-6 text-gray-800">Delete Post</h1>
+					
+					if successMessage != "" {
+						<div class="mb-6 p-4 bg-green-100 text-green-700 rounded-lg">
+							{ successMessage }
+						</div>
+					}
+					
+					if errorMessage != "" {
+						<div class="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
+							{ errorMessage }
+						</div>
+					}
+					
+					<form hx-post="/web/delete/confirm" hx-target="body" method="POST" class="space-y-4">
+						<div>
+							<label for="postId" class="block text-sm font-medium text-gray-700 mb-1">Post ID</label>
+							<input
+								type="text"
+								id="postId"
+								name="postId"
+								required
+								class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+								placeholder="Enter post ID to delete"
+							/>
+						</div>
+						
+						<div class="flex justify-end">
+							<button
+								type="submit"
+								class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors duration-200"
+							>
+								Delete Post
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</body>
+	</html>
+}
+
+templ DeleteConfirmPage(postId string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Confirm Delete - Test News</title>
+			<script src="https://unpkg.com/htmx.org@1.9.6"></script>
+			<script src="https://cdn.tailwindcss.com"></script>
+		</head>
+		<body class="bg-gray-100 min-h-screen">
+			<nav class="bg-gray-800 text-white p-4">
+				<div class="container mx-auto flex justify-between">
+					<a href="/" class="font-bold">Test News</a>
+					<div>
+						<a href="/web" class="mr-4 hover:text-blue-300 transition-colors">Home</a>
+						<a href="/web/posts" class="mr-4 hover:text-blue-300 transition-colors">Posts</a>
+						<a href="/web/upload" class="mr-4 hover:text-blue-300 transition-colors">Upload</a>
+						<a href="/web/delete" class="mr-4 hover:text-blue-300 transition-colors bg-red-700 px-3 py-1 rounded">Delete</a>
+					</div>
+				</div>
+			</nav>
+			
+			<div class="container mx-auto p-6">
+				<div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
+					<h1 class="text-2xl font-bold mb-6 text-gray-800">Confirm Delete</h1>
+					
+					<div class="mb-6 p-4 bg-yellow-100 text-yellow-700 rounded-lg">
+						Are you sure you want to delete the post with ID: <span class="font-semibold">{ postId }</span>? This action cannot be undone.
+					</div>
+					
+					<div class="flex justify-between">
+						<a 
+							href="/web/delete" 
+							class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors duration-200"
+						>
+							Cancel
+						</a>
+						<form hx-post={"/web/delete/execute/" + postId} hx-target="body" method="POST">
+							<button
+								type="submit"
+								class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors duration-200"
+							>
+								Confirm Delete
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</body>
+	</html>
+}

@@ -1,0 +1,93 @@
+package web
+
+templ UploadPage(successMessage string, errorMessage string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Upload New Post - Test News</title>
+			<script src="https://unpkg.com/htmx.org@1.9.6"></script>
+			<script src="https://cdn.tailwindcss.com"></script>
+		</head>
+		<body class="bg-gray-100 min-h-screen">
+			<nav class="bg-gray-800 text-white p-4">
+				<div class="container mx-auto flex justify-between">
+					<a href="/" class="font-bold">Test News</a>
+					<div>
+						<a href="/web" class="mr-4 hover:text-blue-300 transition-colors">Home</a>
+						<a href="/web/posts" class="mr-4 hover:text-blue-300 transition-colors">Posts</a>
+						<a href="/web/upload" class="mr-4 hover:text-blue-300 transition-colors bg-blue-700 px-3 py-1 rounded">Upload</a>
+						<a href="/web/update" class="mr-4 hover:text-blue-300 transition-colors">Update</a>
+						<a href="/web/delete" class="mr-4 hover:text-blue-300 transition-colors">Delete</a>
+					</div>
+				</div>
+			</nav>
+			
+			<div class="container mx-auto p-6">
+				<div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
+					<h1 class="text-2xl font-bold mb-6 text-gray-800">Create New Post</h1>
+					
+					if successMessage != "" {
+						<div class="mb-6 p-4 bg-green-100 text-green-700 rounded-lg">
+							{ successMessage }
+						</div>
+					}
+					
+					if errorMessage != "" {
+						<div class="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
+							{ errorMessage }
+						</div>
+					}
+					
+					<form hx-post="/web/upload/submit" hx-target="body" method="POST" class="space-y-4">
+						<div>
+							<label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+							<input
+								type="text"
+								id="title"
+								name="title"
+								required
+								class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+								placeholder="Enter post title"
+							/>
+						</div>
+						
+						<div>
+							<label for="author" class="block text-sm font-medium text-gray-700 mb-1">Author</label>
+							<input
+								type="text"
+								id="author"
+								name="author"
+								required
+								class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+								placeholder="Enter author name"
+							/>
+						</div>
+						
+						<div>
+							<label for="content" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+							<textarea
+								id="content"
+								name="content"
+								required
+								rows="6"
+								class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+								placeholder="Enter post content"
+							></textarea>
+						</div>
+						
+						<div class="flex justify-end">
+							<button
+								type="submit"
+								class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-200"
+							>
+								Create Post
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</body>
+	</html>
+}

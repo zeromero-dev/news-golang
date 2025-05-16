@@ -22,6 +22,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 		AllowCredentials: true, // Enable cookies/auth
 	}))
 
+	// this is not a concern of duplication
+	// API routes that return JSON
 	r.GET("/", s.HelloWorldHandler)
 
 	r.GET("/health", s.healthHandler)
@@ -41,6 +43,22 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.POST("/hello", func(c *gin.Context) {
 		web.HelloWebHandler(c.Writer, c.Request)
+	})
+
+	// Web routes that return HTML
+	// Serve the HTML page for posts
+	r.GET("/web/posts", func(c *gin.Context) {
+		web.PostsPageHandler(c.Writer, c.Request)
+	})
+
+	r.GET("/api/posts/list", func(c *gin.Context) {
+		web.PostsListHandler(c.Writer, c.Request)
+	})
+
+	r.GET("/api/posts/detail/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		c.Request.URL.Path = "/api/posts/" + id
+		web.PostDetailHandler(c.Writer, c.Request)
 	})
 
 	return r

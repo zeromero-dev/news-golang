@@ -47,7 +47,7 @@ templ PostsPage() {
 				</div>
 			</nav>
 			<div
-				hx-get="/api/posts/"
+				hx-get="/api/posts/list"
 				hx-trigger="load"
 				hx-swap="innerHTML"
 			>
@@ -67,7 +67,7 @@ templ PostDetail(post models.Post) {
 			<span class="text-sm text-gray-500">ID: { post.ID.Hex() }</span>
 			<button 
 				class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded"
-				hx-get="/api/posts/"
+				hx-get="/api/posts/list"
 				hx-target="#post-detail"
 				hx-swap="outerHTML"
 			>Close</button>

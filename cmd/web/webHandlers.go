@@ -2,6 +2,7 @@ package web
 
 import (
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"test-news/internal/database/models"
@@ -25,7 +26,7 @@ func PostsListHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		http.Error(w, "Failed to read response body", http.StatusInternalServerError)
 		return
@@ -67,4 +68,8 @@ func PostDetailHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Render the post detail component
 	PostDetail(post).Render(r.Context(), w)
+}
+
+func UploadPageHandler(w http.ResponseWriter, r *http.Request) {
+	UploadPage().Render(r.Context(), w)
 }

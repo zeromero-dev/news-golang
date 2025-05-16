@@ -61,9 +61,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 		web.PostDetailHandler(c.Writer, c.Request)
 	})
 
-	// Add this route to your existing routes.go file
 	r.GET("/web/upload", func(c *gin.Context) {
 		web.UploadPageHandler(c.Writer, c.Request)
+	})
+
+	r.GET("/web/delete", func(c *gin.Context) {
+		web.DeletePageHandler(c.Writer, c.Request)
 	})
 
 	return r

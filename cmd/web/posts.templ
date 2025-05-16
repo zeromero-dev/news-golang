@@ -40,9 +40,10 @@ templ PostsPage() {
 				<div class="container mx-auto flex justify-between">
 					<a href="/" class="font-bold">Test News</a>
 					<div>
-						<a href="/web" class="mr-4 hover:text-blue-300 transition-colors">Home</a>
+						<a href="/web/posts" class="mr-4 hover:text-blue-300 transition-colors">Home</a>
 						<a href="/web/posts" class="mr-4 hover:text-blue-300 transition-colors bg-blue-700 px-3 py-1 rounded">Posts</a>
 						<a href="/web/upload" class="mr-4 hover:text-blue-300 transition-colors">Upload</a>
+                        <a href="/web/delete" class="mr-4 hover:text-blue-300 transition-colors">Delete</a>
 					</div>
 				</div>
 			</nav>
@@ -58,38 +59,6 @@ templ PostsPage() {
 		</body>
 	</html>
 }
-// templ PostsPage() {
-// 	<!DOCTYPE html>
-// 	<html lang="en">
-// 		<head>
-// 			<meta charset="UTF-8"/>
-// 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-// 			<title>Posts</title>
-// 			<script src="https://unpkg.com/htmx.org@1.9.6"></script>
-// 			<script src="https://cdn.tailwindcss.com"></script>
-// 		</head>
-// 		<body class="bg-gray-100">
-// 			<nav class="bg-gray-800 text-white p-4">
-// 				<div class="container mx-auto flex justify-between">
-// 					<a href="/" class="font-bold">Test News</a>
-// 					<div>
-// 						<a href="/web" class="mr-4">Home</a>
-// 						<a href="/web/posts" class="mr-4">Posts</a>
-// 					</div>
-// 				</div>
-// 			</nav>
-// 			<div
-// 				hx-get="/api/posts/list"
-// 				hx-trigger="load"
-// 				hx-swap="innerHTML"
-// 			>
-// 				<div class="flex justify-center items-center h-64">
-// 					<p class="text-gray-500">Loading posts...</p>
-// 				</div>
-// 			</div>
-// 		</body>
-// 	</html>
-// }
 
 templ PostDetail(post models.Post) {
 	<div class="bg-white p-6 rounded-lg shadow-lg">

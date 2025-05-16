@@ -73,3 +73,6 @@ func PostDetailHandler(w http.ResponseWriter, r *http.Request) {
 func UploadPageHandler(w http.ResponseWriter, r *http.Request) {
 	UploadPage().Render(r.Context(), w)
 }
+func DeletePageHandler(w http.ResponseWriter, r *http.Request) {
+	DeletePage().Render(r.Context(), w)
+}

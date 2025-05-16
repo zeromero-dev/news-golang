@@ -32,21 +32,4 @@ func TestHelloWorldHandler(t *testing.T) {
 	}
 }
 
-func GetAllPostsHandler(t *testing.T) {
-	s := &Server{}
-	r := gin.New()
-	r.GET("/api/posts", s.GetPostsHandler)
-	// Create a test HTTP request
-	req, err := http.NewRequest("GET", "/api/posts", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	// Create a ResponseRecorder to record the response
-	rr := httptest.NewRecorder()
-	// Serve the HTTP request
-	r.ServeHTTP(rr, req)
-	// Check the status code
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("Handler returned wrong status code: got %v want %v", status, http.StatusOK)
-	}
-}
+

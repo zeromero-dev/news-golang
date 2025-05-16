@@ -23,6 +23,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	}))
 
 	r.GET("/", s.HelloWorldHandler)
+
 	r.GET("/health", s.healthHandler)
 
 	r.GET("/api/posts", s.GetPostsHandler)

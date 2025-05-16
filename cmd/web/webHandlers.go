@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"test-news/internal/database/models"
 )
 
@@ -74,8 +75,68 @@ func UploadPageHandler(w http.ResponseWriter, r *http.Request) {
 	UploadPage().Render(r.Context(), w)
 }
 func DeletePageHandler(w http.ResponseWriter, r *http.Request) {
-	DeletePage().Render(r.Context(), w)
+	DeletePage("", "").Render(r.Context(), w)
+}
 
+func DeleteConfirmHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		DeletePage("", "Failed to parse form: "+err.Error()).Render(r.Context(), w)
+		return
+	}
+
+	postId := r.FormValue("postId")
+	if postId == "" {
+		DeletePage("", "Post ID is required").Render(r.Context(), w)
+		return
+	}
+
+	// Check if the post exists
+	resp, err := http.Get("http://localhost:8080/api/posts/" + postId)
+	if err != nil {
+		DeletePage("", "Failed to check post: "+err.Error()).Render(r.Context(), w)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		DeletePage("", "Post not found. Please check the ID and try again.").Render(r.Context(), w)
+		return
+	}
+
+	// Render the confirmation page
+	DeleteConfirmPage(postId).Render(r.Context(), w)
+}
+
+func DeleteExecuteHandler(w http.ResponseWriter, r *http.Request) {
+	// Get the post ID from the URL
+	// The URL format is /web/delete/execute/:id
+	pathParts := strings.Split(r.URL.Path, "/")
+	postId := pathParts[len(pathParts)-1]
+
+	// Create a new request to delete the post
+	req, err := http.NewRequest("DELETE", "http://localhost:8080/api/posts/"+postId, nil)
+	if err != nil {
+		DeletePage("", "Failed to create request: "+err.Error()).Render(r.Context(), w)
+		return
+	}
+
+	// Send the request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		DeletePage("", "Failed to delete post: "+err.Error()).Render(r.Context(), w)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Check if the delete was successful
+	if resp.StatusCode != http.StatusOK {
+		DeletePage("", "Failed to delete post. Please try again.").Render(r.Context(), w)
+		return
+	}
+
+	// Render the delete page with a success message
+	DeletePage("Post deleted successfully!", "").Render(r.Context(), w)
 }
 func UpdatePageHandler(w http.ResponseWriter, r *http.Request) {
 	UpdatePage().Render(r.Context(), w)

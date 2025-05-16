@@ -69,8 +69,17 @@ func (s *Server) RegisterRoutes() http.Handler {
 		web.UpdatePageHandler(c.Writer, c.Request)
 	})
 
+	//Delete page routes + handlers
 	r.GET("/web/delete", func(c *gin.Context) {
 		web.DeletePageHandler(c.Writer, c.Request)
+	})
+
+	r.POST("/web/delete/confirm", func(c *gin.Context) {
+		web.DeleteConfirmHandler(c.Writer, c.Request)
+	})
+
+	r.POST("/web/delete/execute/:id", func(c *gin.Context) {
+		web.DeleteExecuteHandler(c.Writer, c.Request)
 	})
 
 	return r

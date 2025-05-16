@@ -41,24 +41,9 @@ templ UploadPage() {
 					</div>
 					
 					<form
-						hx-post="/api/posts"
-						hx-swap="none"
-						hx-on::after-request="
-							if(event.detail.successful) {
-								document.getElementById('post-form').reset();
-								const msg = document.getElementById('success-message');
-								msg.classList.remove('hidden');
-								msg.classList.add('show');
-								setTimeout(() => {
-									msg.classList.remove('show');
-									setTimeout(() => msg.classList.add('hidden'), 500);
-								}, 3000);
-							} else {
-								alert('Error creating post: ' + event.detail.xhr.responseText);
-							}
-						"
 						id="post-form"
 						class="space-y-4"
+						onsubmit="submitForm(event)"
 					>
 						<div>
 							<label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
@@ -107,6 +92,55 @@ templ UploadPage() {
 					</form>
 				</div>
 			</div>
+			
+			<script>
+				function submitForm(event) {
+					event.preventDefault();
+					
+					// Get form values
+					const title = document.getElementById('title').value;
+					const author = document.getElementById('author').value;
+					const content = document.getElementById('content').value;
+					
+					// Create JSON payload
+					const payload = {
+						title: title,
+						author: author,
+						content: content
+					};
+					
+					// Send request using fetch
+					fetch('/api/posts', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(payload)
+					})
+					.then(response => {
+						if (!response.ok) {
+							return response.text().then(text => {
+								throw new Error(text);
+							});
+						}
+						return response.json();
+					})
+					.then(data => {
+						// Show success message
+						document.getElementById('post-form').reset();
+						const msg = document.getElementById('success-message');
+						msg.classList.remove('hidden');
+						msg.classList.add('show');
+						setTimeout(() => {
+							msg.classList.remove('show');
+							setTimeout(() => msg.classList.add('hidden'), 500);
+						}, 3000);
+					})
+					.catch(error => {
+						alert('Error creating post: ' + error.message);
+					});
+				}
+			</script>
 		</body>
 	</html>
 }

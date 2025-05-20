@@ -74,3 +74,9 @@ watch:
         fi
 
 .PHONY: all build run test clean watch docker-run docker-down itest templ-install
+# Production build and run
+prod:
+	@echo "Building Docker image for production..."
+	docker build -t my-app-prod .
+	@echo "Running Docker container for production..."
+	docker run --rm -p 8080:8080 --name my-app-prod-container my-app-prod
